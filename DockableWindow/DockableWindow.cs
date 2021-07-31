@@ -44,7 +44,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 ForeColor = CaptionForeColor,
                 TabStop = false
             };
-            CloseButton.FlatAppearance.BorderSize = 0;            
+            CloseButton.FlatAppearance.BorderSize = 0;
             CloseButton.Click += CloseButton_Click;
 
             FloatButton = new Button
@@ -72,17 +72,23 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 FlatStyle = FlatStyle.Flat,
                 BackColor = CaptionBackColor,
                 ForeColor = CaptionForeColor,
-                TabStop = false
+                TabStop = false,
             };
             AutoHideButton.FlatAppearance.BorderSize = 0;
             AutoHideButton.Click += AutoHideButton_Click;
-
-            Controls.Add(CloseButton);
-            Controls.Add(FloatButton);
-            Controls.Add(AutoHideButton);
             SetControlBoxButtonPosition();
             InitializeComponent();
+        }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (!DesignMode)
+            {
+                Controls.Add(CloseButton);
+                Controls.Add(FloatButton);
+                Controls.Add(AutoHideButton);
+            }
         }
 
         private void AutoHideButton_Click(object sender, EventArgs e)
@@ -147,9 +153,14 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 
         protected override void OnPaint(PaintEventArgs e)
         {   
-            base.OnPaint(e);            
+            base.OnPaint(e);
+            //CaptionButton d = CaptionButton.
+            
             Rectangle rc = new Rectangle(0, 0, ClientSize.Width, CaptionHeight);
             e.Graphics.FillRectangle(new SolidBrush(CaptionBackColor), rc);            
+            
+            //ControlPaint.DrawButton(e.Graphics, Width - CloseButton.Width - ControlButtonsMarginRight,
+            //    (CaptionHeight - ControlButtonSize) / 2, ControlButtonSize, ControlButtonSize, ButtonState.Normal);
             TextRenderer.DrawText(e.Graphics, Text, Font, new Point(FormEdgeWidth, (CaptionHeight - Font.Height) / 2), CaptionForeColor);
         }
 

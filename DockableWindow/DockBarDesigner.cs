@@ -25,7 +25,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         public override void InitializeNewComponent(IDictionary defaultValues)
         {
             base.InitializeNewComponent(defaultValues);
-            control.Dock = DockBar.DefaultDockStyle;            
+            control.Dock = DockBar.DefaultDockStyle;
         }
     }
 }

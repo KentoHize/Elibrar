@@ -65,9 +65,9 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             _StartPosition = 5;
             _CurrentPosition = 0;
             CurrentWindow = null;
-            CurrentWindowIndex = -1;
+            CurrentWindowIndex = -1;          
         }
-
+     
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
@@ -136,19 +136,12 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 
         public void AddWindow(DockableWindow window)
         {
-            Size size = TextRenderer.MeasureText(window.Text, Font);
-            window.ParentChanged += Window_ParentChanged;
+            Size size = TextRenderer.MeasureText(window.Text, Font);            
             window.ParentDockBar = this;
             _Windows.Add(window);
             _TextWidths.Add(size.Width);
             _WindowsDefaultSize.Add(window.Size);
             Refresh();
-        }
-
-        private void Window_ParentChanged(object sender, EventArgs e)
-        {
-            if (Parent == null)
-                RemoveWindow(sender as DockableWindow);
         }
 
         public void RemoveWindow(DockableWindow window)
@@ -160,8 +153,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 {
                     CurrentWindow = null;
                     CurrentWindowIndex = -1;
-                }        
-                _Windows[index].ParentChanged -= Window_ParentChanged;
+                }
                 _Windows[index].ParentDockBar = null;
                 _WindowsDefaultSize.RemoveAt(index);                
                 _TextWidths.RemoveAt(index);
