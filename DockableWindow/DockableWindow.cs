@@ -12,9 +12,11 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 {
     public partial class DockableWindow : Form
     {
+        private const int ControlButtonsMarginRight = 5;
+        private const int ControlButtonsInterval = 2;
         private const int FormEdgeWidth = 10;
-        private const int CaptionHeight = 32;
-        private const int ControlButtonSize = 20;
+        private const int CaptionHeight = 28;
+        private const int ControlButtonSize = 26;
 
         protected Button CloseButton;
         protected Button FloatButton; // Like Maximize
@@ -35,24 +37,29 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             CloseButton = new Button
             {
                 Name = "___closeButton",
-                Text = "C",
+                Text = "X",
+                Font = new Font(Font.FontFamily, 7, FontStyle.Regular),
                 Width = ControlButtonSize,
                 Height = ControlButtonSize,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = CaptionBackColor
-
+                BackColor = CaptionBackColor,
+                ForeColor = CaptionForeColor,
+                TabStop = false
             };
-            CloseButton.FlatAppearance.BorderSize = 0;
+            CloseButton.FlatAppearance.BorderSize = 0;            
             CloseButton.Click += CloseButton_Click;
 
             FloatButton = new Button
             {
                 Name = "___floatButton",
-                Text = "F",
+                Text = "🔲",
+                Font = new Font(Font.FontFamily, 7, FontStyle.Regular),
                 Width = ControlButtonSize,
                 Height = ControlButtonSize,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = CaptionBackColor
+                BackColor = CaptionBackColor,
+                ForeColor = CaptionForeColor,
+                TabStop = false
             };
             FloatButton.FlatAppearance.BorderSize = 0;
             FloatButton.Click += FloatButton_Click;
@@ -60,11 +67,14 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             AutoHideButton = new Button
             {
                 Name = "__autoHideButton",
-                Text = "A",
+                Text = "─",
+                Font = new Font(Font.FontFamily, 7, FontStyle.Regular),
                 Width = ControlButtonSize,
                 Height = ControlButtonSize,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = CaptionBackColor
+                BackColor = CaptionBackColor,
+                ForeColor = CaptionForeColor,
+                TabStop = false
             };
             AutoHideButton.FlatAppearance.BorderSize = 0;
             AutoHideButton.Click += AutoHideButton_Click;
@@ -85,14 +95,28 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             => Close();
         protected void SetControlBoxButtonPosition()
         {
-            CloseButton.Left = (Width - FormEdgeWidth - CloseButton.Width);
-            CloseButton.Top = (CaptionHeight - ControlButtonSize) / 2;
+            CloseButton.Visible = ControlBox;
+            FloatButton.Visible = MaximizeBox;
+            AutoHideButton.Visible = MinimizeBox;
 
-            FloatButton.Left = (Width - FormEdgeWidth * 2 - CloseButton.Width - FloatButton.Width);
-            FloatButton.Top = (CaptionHeight - ControlButtonSize) / 2;
+            if (Width >= CloseButton.Width + FloatButton.Width + AutoHideButton.Width + ControlButtonsInterval * 3 + ControlButtonsMarginRight + 30)
+            {
 
-            AutoHideButton.Left = (Width - FormEdgeWidth * 3 - CloseButton.Width - FloatButton.Width - AutoHideButton.Width);
-            AutoHideButton.Top = (CaptionHeight - ControlButtonSize) / 2;
+                CloseButton.Left = (Width - CloseButton.Width - ControlButtonsMarginRight);
+                CloseButton.Top = (CaptionHeight - ControlButtonSize) / 2;
+
+                FloatButton.Left = (Width - CloseButton.Width - FloatButton.Width - ControlButtonsMarginRight - ControlButtonsInterval);
+                FloatButton.Top = (CaptionHeight - ControlButtonSize) / 2;
+
+                AutoHideButton.Left = (Width - CloseButton.Width - FloatButton.Width - AutoHideButton.Width - ControlButtonsMarginRight - ControlButtonsInterval * 2);
+                AutoHideButton.Top = (CaptionHeight - ControlButtonSize) / 2;
+            }
+            else
+            {
+                CloseButton.Visible =
+                FloatButton.Visible = 
+                AutoHideButton.Visible = false;
+            }
         }
 
         protected override void OnResize(EventArgs e)
@@ -105,10 +129,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         {   
             base.OnPaint(e);
             //Rectangle rc = new Rectangle(ClientSize.Width - FormEdgeWidth, ClientSize.Height - FormEdgeWidth, FormEdgeWidth, FormEdgeWidth);
-            //ControlPaint.DrawSizeGrip(e.Graphics, BackColor, rc);
             Rectangle rc = new Rectangle(0, 0, ClientSize.Width, CaptionHeight);
-            //ControlPaint.Dr .DrawSizeGrip(e.Graphics, CaptionColor, rc);            
-            e.Graphics.FillRectangle(new SolidBrush(CaptionBackColor), rc);
+            e.Graphics.FillRectangle(new SolidBrush(CaptionBackColor), rc);            
             TextRenderer.DrawText(e.Graphics, Text, Font, new Point(FormEdgeWidth, (CaptionHeight - Font.Height) / 2), CaptionForeColor);
         }
 
