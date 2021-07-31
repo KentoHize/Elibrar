@@ -101,7 +101,6 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 
             if (Width >= CloseButton.Width + FloatButton.Width + AutoHideButton.Width + ControlButtonsInterval * 3 + ControlButtonsMarginRight + 30)
             {
-
                 CloseButton.Left = (Width - CloseButton.Width - ControlButtonsMarginRight);
                 CloseButton.Top = (CaptionHeight - ControlButtonSize) / 2;
 

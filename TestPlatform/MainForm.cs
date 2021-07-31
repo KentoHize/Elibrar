@@ -17,6 +17,8 @@ namespace TestPlatform
         public MainForm()
         {
             InitializeComponent();
+            dockBar1.AddWindow(new DockableWindow1());
+            dockBar1.AddWindow(new DockableWindow2());
         }
 
         private void ShowNewForm(object sender, EventArgs e)
@@ -105,10 +107,27 @@ namespace TestPlatform
         }
 
         private void MainForm_Load(object sender, EventArgs e)
-        {
-            DockWindow1 dw = new DockWindow1();
-            dw.Show();
+        {   
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            switch(dockBar1.Dock)
+            {
+                case DockStyle.Left:
+                    dockBar1.Dock = DockStyle.Top;
+                    break;
+                case DockStyle.Top:
+                    dockBar1.Dock = DockStyle.Right;
+                    break;
+                case DockStyle.Right:
+                    dockBar1.Dock = DockStyle.Bottom;
+                    break;
+                case DockStyle.Bottom:
+                    dockBar1.Dock = DockStyle.Left;
+                    break;
+            }
         }
     }
 }

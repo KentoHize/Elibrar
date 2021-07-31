@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aritiafel.Organizations.ElibrarPartFactory;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,13 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Aritiafel.Organizations.ElibrarPartFactory;
 
 namespace TestPlatform
 {
-    public partial class DockWindow1 : DockableWindow
+    public partial class DockableWindow1 : DockableWindow
     {
-        public DockWindow1()
+        public DockableWindow1()
         {
             InitializeComponent();
         }

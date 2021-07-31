@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,12 +49,22 @@
     <Compile Include="DockableWindow.Designer.cs">
       <DependentUpon>DockableWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="DockBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DockBar.Designer.cs">
+      <DependentUpon>DockBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockBarDesigner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DockableWindow.resx">
       <DependentUpon>DockableWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockBar.resx">
+      <DependentUpon>DockBar.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

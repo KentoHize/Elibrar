@@ -83,6 +83,8 @@ namespace TestPlatform
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.dockBar1 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -325,7 +327,7 @@ namespace TestPlatform
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.optionsToolStripMenuItem.Text = "&Options";
             // 
             // windowsMenu
@@ -531,17 +533,40 @@ namespace TestPlatform
             this.toolStripStatusLabel.Size = new System.Drawing.Size(49, 20);
             this.toolStripStatusLabel.Text = "Status";
             // 
+            // dockBar1
+            // 
+            this.dockBar1.BarColor = System.Drawing.SystemColors.ControlLight;
+            this.dockBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dockBar1.ItemInterval = 5;
+            this.dockBar1.Location = new System.Drawing.Point(0, 502);
+            this.dockBar1.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
+            this.dockBar1.Name = "dockBar1";
+            this.dockBar1.Size = new System.Drawing.Size(843, 30);
+            this.dockBar1.TabIndex = 4;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(465, 195);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(96, 55);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(843, 558);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.dockBar1);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -610,6 +635,8 @@ namespace TestPlatform
         private System.Windows.Forms.ToolStripButton printPreviewToolStripButton;
         private System.Windows.Forms.ToolStripButton helpToolStripButton;
         private System.Windows.Forms.ToolTip toolTip;
+        private Aritiafel.Organizations.ElibrarPartFactory.DockBar dockBar1;
+        private System.Windows.Forms.Button button1;
     }
 }
 
