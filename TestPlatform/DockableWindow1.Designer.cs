@@ -29,10 +29,32 @@ namespace TestPlatform
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // CloseButton
+            // 
+            this.CloseButton.FlatAppearance.BorderSize = 0;
+            this.CloseButton.Location = new System.Drawing.Point(392, 1);
+            // 
+            // FloatButton
+            // 
+            this.FloatButton.FlatAppearance.BorderSize = 0;
+            this.FloatButton.Location = new System.Drawing.Point(364, 1);
+            // 
+            // AutoHideButton
+            // 
+            this.AutoHideButton.FlatAppearance.BorderSize = 0;
+            this.AutoHideButton.Location = new System.Drawing.Point(336, 1);
+            // 
+            // DockableWindow1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(423, 385);
+            this.Name = "DockableWindow1";
             this.Text = "DockableWindow1";
+            this.ResumeLayout(false);
+
         }
 
         #endregion

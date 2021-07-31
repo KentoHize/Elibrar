@@ -21,19 +21,17 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         protected Button CloseButton;
         protected Button FloatButton; // Like Maximize
         protected Button AutoHideButton; //Like Minimize
-
+        public DockStyle DockAt { get; set; }        
         public Color CaptionBackColor { get; set; }
         public Color CaptionForeColor { get; set; }
 
         public DockableWindow()
-        {
-            
+        {   
             SetStyle(ControlStyles.ResizeRedraw, true);
             CaptionBackColor = SystemColors.MenuHighlight;
             CaptionForeColor = Color.White;
-
-            //加3個按鈕
-            //Close
+            DockAt = DockStyle.None;
+            
             CloseButton = new Button
             {
                 Name = "___closeButton",
@@ -126,51 +124,103 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 
         protected override void OnPaint(PaintEventArgs e)
         {   
-            base.OnPaint(e);
-            //Rectangle rc = new Rectangle(ClientSize.Width - FormEdgeWidth, ClientSize.Height - FormEdgeWidth, FormEdgeWidth, FormEdgeWidth);
+            base.OnPaint(e);            
             Rectangle rc = new Rectangle(0, 0, ClientSize.Width, CaptionHeight);
             e.Graphics.FillRectangle(new SolidBrush(CaptionBackColor), rc);            
             TextRenderer.DrawText(e.Graphics, Text, Font, new Point(FormEdgeWidth, (CaptionHeight - Font.Height) / 2), CaptionForeColor);
         }
 
-        //HTLEFT = 10,
-        //HTRIGHT = 11,
-        //HTTOP = 12,
-        //HTTOPLEFT = 13,
-        //HTTOPRIGHT = 14,
-        //HTBOTTOM = 15,
-        //HTBOTTOMLEFT = 16,
-        //HTBOTTOMRIGHT = 17;
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == 0x84)
             {   
                 Point location = new Point(m.LParam.ToInt32());
                 location = PointToClient(location);
-                
                 if (location.X >= 0 && location.Y >= 0 && location.X <= FormEdgeWidth && location.Y <= FormEdgeWidth)
-                    m.Result = (IntPtr)13;
+                {
+                    if (DockAt == DockStyle.None)
+                        m.Result = (IntPtr)ResizeDirection.TopLeft;
+                    else if (DockAt == DockStyle.Right)
+                        m.Result = (IntPtr)ResizeDirection.Left;
+                    else if (DockAt == DockStyle.Bottom)
+                        m.Result = (IntPtr)ResizeDirection.Top;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.X >= Width - FormEdgeWidth && location.Y >= 0 && location.X <= Width && location.Y <= FormEdgeWidth)
-                    m.Result = (IntPtr)14;
+                {
+                    if (DockAt == DockStyle.None)
+                        m.Result = (IntPtr)ResizeDirection.TopRight;
+                    else if (DockAt == DockStyle.Left)
+                        m.Result = (IntPtr)ResizeDirection.Right;
+                    else if (DockAt == DockStyle.Bottom)
+                        m.Result = (IntPtr)ResizeDirection.Top;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.X >= 0 && location.Y >= Height - FormEdgeWidth && location.X <= FormEdgeWidth && location.Y <= Height)
-                    m.Result = (IntPtr)16;
+                {
+                    if (DockAt == DockStyle.None)
+                        m.Result = (IntPtr)ResizeDirection.BottomLeft;
+                    else if (DockAt == DockStyle.Right)
+                        m.Result = (IntPtr)ResizeDirection.Left;
+                    else if (DockAt == DockStyle.Top)
+                        m.Result = (IntPtr)ResizeDirection.Bottom;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.X >= Width - FormEdgeWidth && location.Y >= Height - FormEdgeWidth && location.X <= Width && location.Y <= Height)
-                    m.Result = (IntPtr)17;                
+                {
+                    if (DockAt == DockStyle.None)
+                        m.Result = (IntPtr)ResizeDirection.BottomRight;
+                    else if (DockAt == DockStyle.Left)
+                        m.Result = (IntPtr)ResizeDirection.Right;
+                    else if (DockAt == DockStyle.Top)
+                        m.Result = (IntPtr)ResizeDirection.Bottom;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.X >= 0 && location.X <= Width && location.Y >= 0 && location.Y <= FormEdgeWidth)
-                    m.Result = (IntPtr)12;
+                {
+                    if (DockAt == DockStyle.None || DockAt == DockStyle.Bottom)
+                        m.Result = (IntPtr)ResizeDirection.Top;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.Y < CaptionHeight)
-                    m.Result = (IntPtr)2;
+                {
+                    if (DockAt == DockStyle.None)
+                        m.Result = (IntPtr)2;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.X >= 0 && location.X <= FormEdgeWidth && location.Y >= 0 && location.Y <= Height)
-                    m.Result = (IntPtr)10;
+                {
+                    if (DockAt == DockStyle.None || DockAt == DockStyle.Right)
+                        m.Result = (IntPtr)ResizeDirection.Left;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.X >= Width - FormEdgeWidth && location.X <= Width && location.Y >= 0 && location.Y <= Height)
-                    m.Result = (IntPtr)11;
+                {
+                    if (DockAt == DockStyle.None || DockAt == DockStyle.Left)
+                        m.Result = (IntPtr)ResizeDirection.Right;
+                    else
+                        goto AtEnd;
+                }
                 else if (location.X >= 0 && location.X <= Width && location.Y >= Height - FormEdgeWidth && location.Y <= Height)
-                    m.Result = (IntPtr)15;                
+                {
+                    if (DockAt == DockStyle.None || DockAt == DockStyle.Top)
+                        m.Result = (IntPtr)ResizeDirection.Bottom;
+                    else
+                        goto AtEnd;
+                }
                 else
-                    base.WndProc(ref m);
+                    goto AtEnd;
                 return;
             }
-            base.WndProc(ref m);
+            AtEnd:
+                base.WndProc(ref m);
         }
     }
 }

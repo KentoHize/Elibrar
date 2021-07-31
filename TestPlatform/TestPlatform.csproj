@@ -66,6 +66,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DockableWindow1.resx">
+      <DependentUpon>DockableWindow1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockableWindow2.resx">
+      <DependentUpon>DockableWindow2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
