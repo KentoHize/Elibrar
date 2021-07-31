@@ -20,6 +20,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         protected int _StartPosition;
         protected int _CurrentPosition;
         protected int _MouseOverWindowIndex;
+        protected List<int> _TextWidths;
+        protected List<Size> _WindowsDefaultSize;
         public override DockStyle Dock
         {
             get => base.Dock;
@@ -27,21 +29,20 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             {
                 if (value == DockStyle.Fill || value == DockStyle.None)
                     throw new ArgumentOutOfRangeException(nameof(Dock), DockStyleCantBeFillOrNone);
-                base.Dock = value;
-                for (int i = 0; i < _Windows.Count; i++)
-                    _Windows[i].DockAt = value;
+                base.Dock = value;                
+                if (CurrentWindow != null)
+                    HideWindow();                
                 UpdateWidth();
             }
         }
         protected List<DockableWindow> _Windows;
         public IReadOnlyList<DockableWindow> Windows => _Windows.AsReadOnly();
-        protected List<int> TextWidths { get; set; }
+        
         public int ItemInterval { get; set; }
         public Color BarColor { get; set; }
         public Color MouseOverColor { get; set; }
         public DockableWindow CurrentWindow { get; protected set; }
         public int CurrentWindowIndex { get; protected set; }
-
 
         protected void UpdateWidth()
         {
@@ -56,7 +57,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         {
             InitializeComponent();
             _Windows = new List<DockableWindow>();
-            TextWidths = new List<int>();
+            _TextWidths = new List<int>();
+            _WindowsDefaultSize = new List<Size>();
             MouseOverColor = SystemColors.MenuHighlight;
             BarColor = SystemColors.ControlLight;
             ItemInterval = 5;
@@ -77,8 +79,9 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 SetWindowPostionAndSize(true);
         }
 
-        protected void ShowForm(int index)
+        public void ShowWindow(int index)
         {
+            HideWindow();
             CurrentWindowIndex = index;
             CurrentWindow = _Windows[CurrentWindowIndex];
             CurrentWindow.StartPosition = FormStartPosition.Manual;
@@ -92,26 +95,26 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             switch (Dock)
             {
                 case DockStyle.Left:
-                    CurrentWindow.Width = _Windows[CurrentWindowIndex].Width;
+                    CurrentWindow.Width = _WindowsDefaultSize[CurrentWindowIndex].Width;
                     CurrentWindow.Height = Height;
                     CurrentWindow.Left = p.X + Width;
                     CurrentWindow.Top = p.Y;
                     break;
                 case DockStyle.Bottom:
                     CurrentWindow.Width = Width;
-                    CurrentWindow.Height = _Windows[CurrentWindowIndex].Height;
+                    CurrentWindow.Height = _WindowsDefaultSize[CurrentWindowIndex].Height;
                     CurrentWindow.Left = p.X;
                     CurrentWindow.Top = p.Y - CurrentWindow.Height;
                     break;
                 case DockStyle.Right:
-                    CurrentWindow.Width = _Windows[CurrentWindowIndex].Width;
+                    CurrentWindow.Width = _WindowsDefaultSize[CurrentWindowIndex].Width;
                     CurrentWindow.Height = Height;
                     CurrentWindow.Left = p.X - CurrentWindow.Width;
                     CurrentWindow.Top = p.Y;
                     break;
                 case DockStyle.Top:
                     CurrentWindow.Width = Width;
-                    CurrentWindow.Height = _Windows[CurrentWindowIndex].Height;
+                    CurrentWindow.Height = _WindowsDefaultSize[CurrentWindowIndex].Height;
                     CurrentWindow.Left = p.X;
                     CurrentWindow.Top = p.Y + Height;
                     break;
@@ -122,7 +125,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 Refresh();
         }
 
-        protected void HideForm()
+        public void HideWindow()
         {
             if (CurrentWindow == null)
                 return;
@@ -134,11 +137,11 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         public void AddWindow(DockableWindow window)
         {
             Size size = TextRenderer.MeasureText(window.Text, Font);
-            window.FormClosed += Window_FormClosed;
-            window.ParentChanged += Window_ParentChanged;            
-            window.DockAt = Dock;
+            window.ParentChanged += Window_ParentChanged;
+            window.ParentDockBar = this;
             _Windows.Add(window);
-            TextWidths.Add(size.Width);
+            _TextWidths.Add(size.Width);
+            _WindowsDefaultSize.Add(window.Size);
             Refresh();
         }
 
@@ -148,20 +151,20 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 RemoveWindow(sender as DockableWindow);
         }
 
-        private void Window_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            RemoveWindow(sender as DockableWindow);
-        }
-
         public void RemoveWindow(DockableWindow window)
         {
             int index = _Windows.IndexOf(window);
             if (index != -1)
             {
                 if (CurrentWindowIndex == index)
-                    HideForm();
-                _Windows[index].FormClosed -= Window_FormClosed;
+                {
+                    CurrentWindow = null;
+                    CurrentWindowIndex = -1;
+                }        
                 _Windows[index].ParentChanged -= Window_ParentChanged;
+                _Windows[index].ParentDockBar = null;
+                _WindowsDefaultSize.RemoveAt(index);                
+                _TextWidths.RemoveAt(index);
                 _Windows.RemoveAt(index);
                 Refresh();
             }
@@ -181,7 +184,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                     newMouseOverFormIndex = -1;
                     break;
                 }
-                position += TextWidths[i];
+                position += _TextWidths[i];
                 if (((Dock == DockStyle.Left || Dock == DockStyle.Right) && e.Y < position) ||
                     ((Dock == DockStyle.Top || Dock == DockStyle.Bottom) && e.X < position))
                 {
@@ -215,11 +218,11 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             if (_MouseOverWindowIndex == -1)
                 return;
             else if (CurrentWindowIndex == _MouseOverWindowIndex)
-                HideForm();
+                HideWindow();
             else
             {
-                HideForm();
-                ShowForm(_MouseOverWindowIndex);
+                HideWindow();
+                ShowWindow(_MouseOverWindowIndex);
             }
         }
 
@@ -235,25 +238,25 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 switch (Dock)
                 {
                     case DockStyle.Left:
-                        e.Graphics.FillRectangle(new SolidBrush(barColor), 0, position, 7, TextWidths[i]);
+                        e.Graphics.FillRectangle(new SolidBrush(barColor), 0, position, 7, _TextWidths[i]);
                         e.Graphics.DrawString(_Windows[i].Text, Font, new SolidBrush(foreColor), new PointF(10, position), sf);
                         break;
                     case DockStyle.Right:
                         e.Graphics.DrawString(_Windows[i].Text, Font, new SolidBrush(foreColor), new PointF(0, position), sf);
-                        e.Graphics.FillRectangle(new SolidBrush(barColor), Font.Height + 5, position, 7, TextWidths[i]);
+                        e.Graphics.FillRectangle(new SolidBrush(barColor), Font.Height + 5, position, 7, _TextWidths[i]);
                         break;
                     case DockStyle.Top:
-                        e.Graphics.FillRectangle(new SolidBrush(barColor), position, 0, TextWidths[i], 7);
+                        e.Graphics.FillRectangle(new SolidBrush(barColor), position, 0, _TextWidths[i], 7);
                         e.Graphics.DrawString(_Windows[i].Text, Font, new SolidBrush(foreColor), new PointF(position, 10));
                         break;
                     case DockStyle.Bottom:
                         e.Graphics.DrawString(_Windows[i].Text, Font, new SolidBrush(foreColor), new PointF(position, 0));
-                        e.Graphics.FillRectangle(new SolidBrush(barColor), position, Font.Height + 5, TextWidths[i], 7);
+                        e.Graphics.FillRectangle(new SolidBrush(barColor), position, Font.Height + 5, _TextWidths[i], 7);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(Dock), DockStyleCantBeFillOrNone);
                 }
-                position += TextWidths[i] + ItemInterval;
+                position += _TextWidths[i] + ItemInterval;
             }
 
         }

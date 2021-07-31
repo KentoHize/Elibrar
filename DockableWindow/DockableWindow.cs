@@ -21,16 +21,16 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         protected Button CloseButton;
         protected Button FloatButton; // Like Maximize
         protected Button AutoHideButton; //Like Minimize
-        public DockStyle DockAt { get; set; }        
+        public DockBar ParentDockBar { get; set; }
         public Color CaptionBackColor { get; set; }
         public Color CaptionForeColor { get; set; }
 
         public DockableWindow()
-        {   
+        {
             SetStyle(ControlStyles.ResizeRedraw, true);
             CaptionBackColor = SystemColors.MenuHighlight;
             CaptionForeColor = Color.White;
-            DockAt = DockStyle.None;
+            ParentDockBar = null;
             
             CloseButton = new Button
             {
@@ -86,11 +86,34 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         }
 
         private void AutoHideButton_Click(object sender, EventArgs e)
-            => WindowState = FormWindowState.Minimized;
+        {
+            if (ParentDockBar == null)
+                WindowState = FormWindowState.Minimized;
+            else
+                ParentDockBar.HideWindow();
+        }
+            
         private void FloatButton_Click(object sender, EventArgs e)
-            => WindowState = WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal;
+        {
+            if(ParentDockBar == null)
+                WindowState = WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal;
+            else
+            {
+                Left += 20;
+                Top += 20;
+                ParentDockBar.RemoveWindow(this);
+            }
+                
+        }
+            
         private void CloseButton_Click(object sender, EventArgs e)
             => Close();
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            if (ParentDockBar != null)
+                ParentDockBar.RemoveWindow(this);
+            base.OnFormClosed(e);
+        }
         protected void SetControlBoxButtonPosition()
         {
             CloseButton.Visible = ControlBox;
@@ -138,79 +161,79 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 location = PointToClient(location);
                 if (location.X >= 0 && location.Y >= 0 && location.X <= FormEdgeWidth && location.Y <= FormEdgeWidth)
                 {
-                    if (DockAt == DockStyle.None)
+                    if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.TopLeft;
-                    else if (DockAt == DockStyle.Right)
+                    else if (ParentDockBar.Dock == DockStyle.Right)
                         m.Result = (IntPtr)ResizeDirection.Left;
-                    else if (DockAt == DockStyle.Bottom)
+                    else if (ParentDockBar.Dock == DockStyle.Bottom)
                         m.Result = (IntPtr)ResizeDirection.Top;
                     else
                         goto AtEnd;
                 }
                 else if (location.X >= Width - FormEdgeWidth && location.Y >= 0 && location.X <= Width && location.Y <= FormEdgeWidth)
                 {
-                    if (DockAt == DockStyle.None)
+                    if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.TopRight;
-                    else if (DockAt == DockStyle.Left)
+                    else if (ParentDockBar.Dock == DockStyle.Left)
                         m.Result = (IntPtr)ResizeDirection.Right;
-                    else if (DockAt == DockStyle.Bottom)
+                    else if (ParentDockBar.Dock == DockStyle.Bottom)
                         m.Result = (IntPtr)ResizeDirection.Top;
                     else
                         goto AtEnd;
                 }
                 else if (location.X >= 0 && location.Y >= Height - FormEdgeWidth && location.X <= FormEdgeWidth && location.Y <= Height)
                 {
-                    if (DockAt == DockStyle.None)
+                    if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.BottomLeft;
-                    else if (DockAt == DockStyle.Right)
+                    else if (ParentDockBar.Dock == DockStyle.Right)
                         m.Result = (IntPtr)ResizeDirection.Left;
-                    else if (DockAt == DockStyle.Top)
+                    else if (ParentDockBar.Dock == DockStyle.Top)
                         m.Result = (IntPtr)ResizeDirection.Bottom;
                     else
                         goto AtEnd;
                 }
                 else if (location.X >= Width - FormEdgeWidth && location.Y >= Height - FormEdgeWidth && location.X <= Width && location.Y <= Height)
                 {
-                    if (DockAt == DockStyle.None)
+                    if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.BottomRight;
-                    else if (DockAt == DockStyle.Left)
+                    else if (ParentDockBar.Dock == DockStyle.Left)
                         m.Result = (IntPtr)ResizeDirection.Right;
-                    else if (DockAt == DockStyle.Top)
+                    else if (ParentDockBar.Dock == DockStyle.Top)
                         m.Result = (IntPtr)ResizeDirection.Bottom;
                     else
                         goto AtEnd;
                 }
                 else if (location.X >= 0 && location.X <= Width && location.Y >= 0 && location.Y <= FormEdgeWidth)
-                {
-                    if (DockAt == DockStyle.None || DockAt == DockStyle.Bottom)
+                {   
+                    if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Bottom)
                         m.Result = (IntPtr)ResizeDirection.Top;
                     else
                         goto AtEnd;
                 }
                 else if (location.Y < CaptionHeight)
                 {
-                    if (DockAt == DockStyle.None)
+                    if (ParentDockBar == null)
                         m.Result = (IntPtr)2;
                     else
                         goto AtEnd;
                 }
                 else if (location.X >= 0 && location.X <= FormEdgeWidth && location.Y >= 0 && location.Y <= Height)
                 {
-                    if (DockAt == DockStyle.None || DockAt == DockStyle.Right)
+                    if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Right)
                         m.Result = (IntPtr)ResizeDirection.Left;
                     else
                         goto AtEnd;
                 }
                 else if (location.X >= Width - FormEdgeWidth && location.X <= Width && location.Y >= 0 && location.Y <= Height)
                 {
-                    if (DockAt == DockStyle.None || DockAt == DockStyle.Left)
+                    if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Left)
                         m.Result = (IntPtr)ResizeDirection.Right;
                     else
                         goto AtEnd;
                 }
                 else if (location.X >= 0 && location.X <= Width && location.Y >= Height - FormEdgeWidth && location.Y <= Height)
                 {
-                    if (DockAt == DockStyle.None || DockAt == DockStyle.Top)
+                    if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Top)
                         m.Result = (IntPtr)ResizeDirection.Bottom;
                     else
                         goto AtEnd;
