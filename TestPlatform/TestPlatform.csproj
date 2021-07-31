@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DockWindow1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DockWindow1.Designer.cs">
+      <DependentUpon>DockWindow1.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +84,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DockableWindow\DockableWindow.csproj">
+      <Project>{8bb7dcf6-3b86-4dec-82b4-2ca98a9ac44b}</Project>
+      <Name>DockableWindow</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DockBar\DockBar.csproj">
+      <Project>{abf1f555-73cd-4ca8-b98d-6c5d4b18f4dd}</Project>
+      <Name>DockBar</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -103,5 +103,12 @@ namespace TestPlatform
                 childForm.Close();
             }
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            DockWindow1 dw = new DockWindow1();
+            dw.Show();
+
+        }
     }
 }

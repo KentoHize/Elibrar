@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ABF1F555-73CD-4CA8-B98D-6C5D4B18F4DD}</ProjectGuid>
+    <ProjectGuid>{8BB7DCF6-3B86-4DEC-82B4-2CA98A9AC44B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Aritiafel.Organizations.ElibrarPartFactory</RootNamespace>
-    <AssemblyName>Aritiafel.Organizations.ElibrarPartFactory.DockBar</AssemblyName>
+    <AssemblyName>Aritiafel.Organizations.ElibrarPartFactory.DockWindow</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -42,14 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserControl1.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="DockableWindow.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <Compile Include="DockableWindow.Designer.cs">
+      <DependentUpon>DockableWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DockableWindow.resx">
+      <DependentUpon>DockableWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
