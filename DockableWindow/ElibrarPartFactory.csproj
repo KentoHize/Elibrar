@@ -7,7 +7,7 @@
     <ProjectGuid>{8BB7DCF6-3B86-4DEC-82B4-2CA98A9AC44B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Aritiafel.Organizations.ElibrarPartFactory</RootNamespace>
-    <AssemblyName>Aritiafel.Organizations.ElibrarPartFactory.DockWindow</AssemblyName>
+    <AssemblyName>Aritiafel.Organizations.ElibrarPartFactory</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
