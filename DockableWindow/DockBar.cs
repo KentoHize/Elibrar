@@ -72,7 +72,15 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         {
             base.OnCreateControl();
             ParentForm.Resize += ParentForm_Resize;
+            ParentForm.Move += ParentForm_Move;
         }
+
+        private void ParentForm_Move(object sender, EventArgs e)
+        {
+            if (CurrentWindow != null)
+                SetWindowPostionAndSize(true);
+        }
+
         private void ParentForm_Resize(object sender, EventArgs e)
         {
             if (CurrentWindow != null)

@@ -21,6 +21,10 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         protected Button CloseButton;
         protected Button FloatButton; // Like Maximize
         protected Button AutoHideButton; //Like Minimize
+        protected bool _IsMoving;
+        protected DockBar[] _OwnerDockBars;
+        protected Control _PaintingArea;
+
         public DockBar ParentDockBar { get; set; }
         public Color CaptionBackColor { get; set; }
         public Color CaptionForeColor { get; set; }
@@ -31,7 +35,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             CaptionBackColor = SystemColors.MenuHighlight;
             CaptionForeColor = Color.White;
             ParentDockBar = null;
-            
+            _OwnerDockBars = new DockBar[4];
+
             CloseButton = new Button
             {
                 Name = "___closeButton",
@@ -98,10 +103,10 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             else
                 ParentDockBar.HideWindow();
         }
-            
+
         private void FloatButton_Click(object sender, EventArgs e)
         {
-            if(ParentDockBar == null)
+            if (ParentDockBar == null)
                 WindowState = WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal;
             else
             {
@@ -109,9 +114,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 Top += 20;
                 ParentDockBar.RemoveWindow(this);
             }
-                
         }
-            
+
         private void CloseButton_Click(object sender, EventArgs e)
             => Close();
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -140,7 +144,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             else
             {
                 CloseButton.Visible =
-                FloatButton.Visible = 
+                FloatButton.Visible =
                 AutoHideButton.Visible = false;
             }
         }
@@ -152,22 +156,62 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         }
 
         protected override void OnPaint(PaintEventArgs e)
-        {   
+        {
             base.OnPaint(e);
-            //CaptionButton d = CaptionButton.
-            
             Rectangle rc = new Rectangle(0, 0, ClientSize.Width, CaptionHeight);
-            e.Graphics.FillRectangle(new SolidBrush(CaptionBackColor), rc);            
-            
-            //ControlPaint.DrawButton(e.Graphics, Width - CloseButton.Width - ControlButtonsMarginRight,
-            //    (CaptionHeight - ControlButtonSize) / 2, ControlButtonSize, ControlButtonSize, ButtonState.Normal);
+            e.Graphics.FillRectangle(new SolidBrush(CaptionBackColor), rc);
             TextRenderer.DrawText(e.Graphics, Text, Font, new Point(FormEdgeWidth, (CaptionHeight - Font.Height) / 2), CaptionForeColor);
         }
 
+        private void PaintingArea_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(_PaintingArea.BackColor);            
+            if (_IsMoving)
+            {
+                e.Graphics.FillRectangle(Brushes.Black, 20, 20, 100, 100);
+            }
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if(Visible == false && _PaintingArea != null)
+            {
+                _PaintingArea.Paint -= PaintingArea_Paint;
+                return;
+            }
+
+            _PaintingArea = null;
+            if (Owner != null)
+            {
+                _OwnerDockBars[0] = _OwnerDockBars[1] =
+                _OwnerDockBars[2] = _OwnerDockBars[3] = null;
+                foreach (Control c in Owner.Controls)
+                {
+                    if (c is DockBar db)
+                    {
+                        if (db.Dock == DockStyle.Left)
+                            _OwnerDockBars[0] = db;
+                        else if (db.Dock == DockStyle.Top)
+                            _OwnerDockBars[1] = db;
+                        else if (db.Dock == DockStyle.Right)
+                            _OwnerDockBars[2] = db;
+                        else if (db.Dock == DockStyle.Bottom)
+                            _OwnerDockBars[3] = db;
+                    }
+                    if (c is MdiClient)
+                        _PaintingArea = c;
+                }
+                if (_PaintingArea == null)
+                    _PaintingArea = Owner;                
+                _PaintingArea.Paint += PaintingArea_Paint;
+            }
+        }
+       
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == 0x84)
-            {   
+            {
                 Point location = new Point(m.LParam.ToInt32());
                 location = PointToClient(location);
                 if (location.X >= 0 && location.Y >= 0 && location.X <= FormEdgeWidth && location.Y <= FormEdgeWidth)
@@ -213,9 +257,9 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                         m.Result = (IntPtr)ResizeDirection.Bottom;
                     else
                         goto AtEnd;
-                }
+                }               
                 else if (location.X >= 0 && location.X <= Width && location.Y >= 0 && location.Y <= FormEdgeWidth)
-                {   
+                {
                     if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Bottom)
                         m.Result = (IntPtr)ResizeDirection.Top;
                     else
@@ -224,7 +268,14 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 else if (location.Y < CaptionHeight)
                 {
                     if (ParentDockBar == null)
+                    {
                         m.Result = (IntPtr)2;
+                        if (_IsMoving)
+                        {
+                            _IsMoving = false;
+                            _PaintingArea.Refresh();
+                        }
+                    }
                     else
                         goto AtEnd;
                 }
@@ -253,8 +304,13 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                     goto AtEnd;
                 return;
             }
-            AtEnd:
-                base.WndProc(ref m);
+            else if (m.Msg == 0xA1)
+            {   
+                _IsMoving = true;
+                _PaintingArea.Refresh();
+            }
+        AtEnd:
+            base.WndProc(ref m);
         }
     }
 }

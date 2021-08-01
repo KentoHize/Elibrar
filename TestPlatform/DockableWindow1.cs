@@ -16,6 +16,6 @@ namespace TestPlatform
         public DockableWindow1()
         {
             InitializeComponent();
-        }
+        }       
     }
 }

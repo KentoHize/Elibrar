@@ -107,8 +107,8 @@ namespace TestPlatform
         }
 
         private void MainForm_Load(object sender, EventArgs e)
-        {   
-
+        {
+          
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -129,5 +129,25 @@ namespace TestPlatform
                     break;
             }
         }
+
+        
+
+        private void MainForm_Paint(object sender, PaintEventArgs e)
+        {
+            //Controls.
+            //e.Graphics.FillRectangle(Brushes.Black, 20, 20, 100, 100);
+            //var g = (sender as Form).CreateGraphics();
+
+            //g.FillRectangle(Brushes.Black, 20, 20, 100, 100);
+            //g.Flush();
+
+            //Console.WriteLine("M_P");
+        }
+
+        private void MainForm_Layout(object sender, LayoutEventArgs e)
+        {
+
+        }
+      
     }
 }
