@@ -14,13 +14,14 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
     {
         private const int ControlButtonsMarginRight = 5;
         private const int ControlButtonsInterval = 2;
-        private const int FormEdgeWidth = 10;
+        private const int WindowEdgeWidth = 10;
         private const int CaptionHeight = 28;
         private const int ControlButtonSize = 26;
 
         protected Button CloseButton;
         protected Button FloatButton; // Like Maximize
         protected Button AutoHideButton; //Like Minimize
+        //protected bool _ReadyToMove;
         protected bool _IsMoving;
         protected DockBar[] _OwnerDockBars;
         protected Control _PaintingArea;
@@ -160,14 +161,15 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             base.OnPaint(e);
             Rectangle rc = new Rectangle(0, 0, ClientSize.Width, CaptionHeight);
             e.Graphics.FillRectangle(new SolidBrush(CaptionBackColor), rc);
-            TextRenderer.DrawText(e.Graphics, Text, Font, new Point(FormEdgeWidth, (CaptionHeight - Font.Height) / 2), CaptionForeColor);
+            TextRenderer.DrawText(e.Graphics, Text, Font, new Point(WindowEdgeWidth, (CaptionHeight - Font.Height) / 2), CaptionForeColor);
         }
 
         private void PaintingArea_Paint(object sender, PaintEventArgs e)
-        {
-            e.Graphics.Clear(_PaintingArea.BackColor);            
+        {   
+            e.Graphics.Clear(_PaintingArea.BackColor);
             if (_IsMoving)
             {
+
                 e.Graphics.FillRectangle(Brushes.Black, 20, 20, 100, 100);
             }
         }
@@ -175,13 +177,11 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-            if(Visible == false && _PaintingArea != null)
-            {
-                _PaintingArea.Paint -= PaintingArea_Paint;
-                return;
-            }
-
-            _PaintingArea = null;
+            if(Visible)
+                SetPaintingAreaAndOwnerDockBars();
+        }
+        protected void SetPaintingAreaAndOwnerDockBars()
+        {
             if (Owner != null)
             {
                 _OwnerDockBars[0] = _OwnerDockBars[1] =
@@ -203,18 +203,23 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                         _PaintingArea = c;
                 }
                 if (_PaintingArea == null)
-                    _PaintingArea = Owner;                
-                _PaintingArea.Paint += PaintingArea_Paint;
+                    _PaintingArea = Owner;
             }
         }
-       
+
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == 0x84)
             {
+                if(_IsMoving)
+                {
+                    _IsMoving = false;
+                    _PaintingArea.Refresh();
+                }
+                
                 Point location = new Point(m.LParam.ToInt32());
                 location = PointToClient(location);
-                if (location.X >= 0 && location.Y >= 0 && location.X <= FormEdgeWidth && location.Y <= FormEdgeWidth)
+                if (location.X >= 0 && location.Y >= 0 && location.X <= WindowEdgeWidth && location.Y <= WindowEdgeWidth)
                 {
                     if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.TopLeft;
@@ -225,7 +230,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                     else
                         goto AtEnd;
                 }
-                else if (location.X >= Width - FormEdgeWidth && location.Y >= 0 && location.X <= Width && location.Y <= FormEdgeWidth)
+                else if (location.X >= Width - WindowEdgeWidth && location.Y >= 0 && location.X <= Width && location.Y <= WindowEdgeWidth)
                 {
                     if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.TopRight;
@@ -236,7 +241,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                     else
                         goto AtEnd;
                 }
-                else if (location.X >= 0 && location.Y >= Height - FormEdgeWidth && location.X <= FormEdgeWidth && location.Y <= Height)
+                else if (location.X >= 0 && location.Y >= Height - WindowEdgeWidth && location.X <= WindowEdgeWidth && location.Y <= Height)
                 {
                     if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.BottomLeft;
@@ -247,7 +252,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                     else
                         goto AtEnd;
                 }
-                else if (location.X >= Width - FormEdgeWidth && location.Y >= Height - FormEdgeWidth && location.X <= Width && location.Y <= Height)
+                else if (location.X >= Width - WindowEdgeWidth && location.Y >= Height - WindowEdgeWidth && location.X <= Width && location.Y <= Height)
                 {
                     if (ParentDockBar == null)
                         m.Result = (IntPtr)ResizeDirection.BottomRight;
@@ -257,8 +262,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                         m.Result = (IntPtr)ResizeDirection.Bottom;
                     else
                         goto AtEnd;
-                }               
-                else if (location.X >= 0 && location.X <= Width && location.Y >= 0 && location.Y <= FormEdgeWidth)
+                }
+                else if (location.X >= 0 && location.X <= Width && location.Y >= 0 && location.Y <= WindowEdgeWidth)
                 {
                     if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Bottom)
                         m.Result = (IntPtr)ResizeDirection.Top;
@@ -268,32 +273,25 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 else if (location.Y < CaptionHeight)
                 {
                     if (ParentDockBar == null)
-                    {
                         m.Result = (IntPtr)2;
-                        if (_IsMoving)
-                        {
-                            _IsMoving = false;
-                            _PaintingArea.Refresh();
-                        }
-                    }
                     else
                         goto AtEnd;
                 }
-                else if (location.X >= 0 && location.X <= FormEdgeWidth && location.Y >= 0 && location.Y <= Height)
+                else if (location.X >= 0 && location.X <= WindowEdgeWidth && location.Y >= 0 && location.Y <= Height)
                 {
                     if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Right)
                         m.Result = (IntPtr)ResizeDirection.Left;
                     else
                         goto AtEnd;
                 }
-                else if (location.X >= Width - FormEdgeWidth && location.X <= Width && location.Y >= 0 && location.Y <= Height)
+                else if (location.X >= Width - WindowEdgeWidth && location.X <= Width && location.Y >= 0 && location.Y <= Height)
                 {
                     if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Left)
                         m.Result = (IntPtr)ResizeDirection.Right;
                     else
                         goto AtEnd;
                 }
-                else if (location.X >= 0 && location.X <= Width && location.Y >= Height - FormEdgeWidth && location.Y <= Height)
+                else if (location.X >= 0 && location.X <= Width && location.Y >= Height - WindowEdgeWidth && location.Y <= Height)
                 {
                     if (ParentDockBar == null || ParentDockBar.Dock == DockStyle.Top)
                         m.Result = (IntPtr)ResizeDirection.Bottom;
@@ -306,8 +304,15 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             }
             else if (m.Msg == 0xA1)
             {   
-                _IsMoving = true;
-                _PaintingArea.Refresh();
+                Point location = new Point(m.LParam.ToInt32());
+                location = PointToClient(location);
+                if (location.Y < CaptionHeight && location.Y > WindowEdgeWidth)
+                {   
+                    _PaintingArea.Paint -= PaintingArea_Paint;
+                    _PaintingArea.Paint += PaintingArea_Paint;
+                    _IsMoving = true;
+                    _PaintingArea.Refresh();
+                }               
             }
         AtEnd:
             base.WndProc(ref m);
