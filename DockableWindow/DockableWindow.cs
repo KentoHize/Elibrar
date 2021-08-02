@@ -13,7 +13,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         private const int ControlButtonSize = 26;
         private const int DockIconMarginToEdge = 20;
         private const int DockIconHeight = 40;
-        private const int DockIconWidth = 40;        
+        private const int DockIconWidth = 40;
         private const int DockIconWindowHeight = 20;
         private const int DockIconWindowWidth = 16;
 
@@ -23,8 +23,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 
         protected DockBar[] _OwnerDockBars;
         protected Form _PaintingForm;
-        //protected Panel[] _DockIconPanels;
-        protected Rectangle[] DockIconRectangles;
+        protected Rectangle[] DockIconRectangles;        
+        public Rectangle PaintingAreaRectangle => _PaintingForm.ClientRectangle;
         public DockBar ParentDockBar { get; set; }
         public Color CaptionBackColor { get; set; }
         public Color CaptionForeColor { get; set; }
@@ -86,10 +86,10 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             _PaintingForm = new Form();
             _PaintingForm.BackColor = Color.FromArgb(1, 1, 1);
             _PaintingForm.FormBorderStyle = FormBorderStyle.None;
-            _PaintingForm.TransparencyKey = _PaintingForm.BackColor;            
+            _PaintingForm.TransparencyKey = _PaintingForm.BackColor;
             _PaintingForm.StartPosition = FormStartPosition.Manual;
             _PaintingForm.TopMost = true;
-            _PaintingForm.Paint += _PaintingForm_Paint;            
+            _PaintingForm.Paint += _PaintingForm_Paint;
             _PaintingForm.MouseMove += _PaintingForm_MouseMove;
 
             InitializeComponent();
@@ -99,12 +99,9 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         {
             _PaintingForm.Visible = false;
             Console.WriteLine($"PFMM:{e.X},{e.Y}");
-            if (DockIconRectangles[0].Contains(e.X, e.Y))
-            {
-                _OwnerDockBars[0].AddWindow(this);
-            }
-
-            //_PaintingForm.Visible = false;
+            for (int i = 0; i < 4; i++)
+                if (DockIconRectangles[i].Contains(e.X, e.Y))
+                    _OwnerDockBars[i].AddWindow(this);
             //Console.WriteLine($"{e.X},{e.Y}");
         }
 
@@ -115,13 +112,13 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             g.FillRectangle(new SolidBrush(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, 4);
             g.DrawRectangle(new Pen(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, DockIconRectangles[index].Height - 12);
             g.DrawRectangle(new Pen(Color.Gray), DockIconRectangles[index]);
-            g.FillPolygon(new SolidBrush(Color.Black), new Point[] { 
+            g.FillPolygon(new SolidBrush(Color.Black), new Point[] {
                 new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 8,
                     DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2),
                 new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 12,
                     DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 - 4),
                 new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 12,
-                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 + 4) }); 
+                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 + 4) });
         }
 
         private void _PaintingForm_Paint(object sender, PaintEventArgs e)
@@ -225,9 +222,17 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             base.OnVisibleChanged(e);
             if (Visible)
                 SetOwnerAndPaintingFormAndDockBars();
+            else
+                DisableOwner();
         }
 
-        protected void SetOwnerAndPaintingFormAndDockBars()
+        internal void DisableOwner()
+        {
+            Owner.Resize -= Owner_Resize;
+            Owner.Move -= Owner_Move;
+        }
+
+        internal void SetOwnerAndPaintingFormAndDockBars()
         {
             if (Owner != null)
             {
@@ -237,39 +242,21 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 Owner.Move += Owner_Move;
                 _OwnerDockBars[0] = _OwnerDockBars[1] =
                 _OwnerDockBars[2] = _OwnerDockBars[3] = null;
-                //_DockIconPanels[0].Visible = _DockIconPanels[1].Visible =
-                //_DockIconPanels[2].Visible = _DockIconPanels[3].Visible = false;
                 foreach (Control c in Owner.Controls)
                 {
-                    if (c is DockBar db)
+                    if (c is DockBar db && db.Enabled)
                     {
                         if (db.Dock == DockStyle.Left)
-                        {
                             _OwnerDockBars[0] = db;
-                            //_DockIconPanels[0].Visible = true;
-                        }   
                         else if (db.Dock == DockStyle.Top)
-                        {
                             _OwnerDockBars[1] = db;
-                            //_DockIconPanels[1].Visible = true;
-                        }   
                         else if (db.Dock == DockStyle.Right)
-                        {
                             _OwnerDockBars[2] = db;
-                            //_DockIconPanels[2].Visible = true;
-                        }                            
                         else if (db.Dock == DockStyle.Bottom)
-                        {
                             _OwnerDockBars[3] = db;
-                            //_DockIconPanels[3].Visible = true;
-                        }                            
-                    }
-                    if (c is MdiClient)
-                    {
-                        _PaintingForm.Bounds = c.Bounds;
-                        _PaintingForm.Location = c.PointToScreen(new Point(0, 0));
                     }
                 }
+                SetPaintingFormBoundsAndLocation();
             }
         }
 
@@ -395,7 +382,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                 location = PointToClient(location);
                 if (location.Y < CaptionHeight && location.Y > WindowEdgeWidth)
                     _PaintingForm.Visible = true;
-            }            
+            }
         AtEnd:
             base.WndProc(ref m);
         }

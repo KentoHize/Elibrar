@@ -84,10 +84,10 @@ namespace TestPlatform
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.button1 = new System.Windows.Forms.Button();
-            this.dockBar1 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
-            this.dockBar2 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
-            this.dockBar3 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
             this.dockBar4 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
+            this.dockBar3 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
+            this.dockBar2 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
+            this.dockBar1 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -546,27 +546,16 @@ namespace TestPlatform
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // dockBar1
+            // dockBar4
             // 
-            this.dockBar1.BarColor = System.Drawing.SystemColors.ControlLight;
-            this.dockBar1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.dockBar1.ItemInterval = 5;
-            this.dockBar1.Location = new System.Drawing.Point(0, 61);
-            this.dockBar1.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
-            this.dockBar1.Name = "dockBar1";
-            this.dockBar1.Size = new System.Drawing.Size(30, 668);
-            this.dockBar1.TabIndex = 4;
-            // 
-            // dockBar2
-            // 
-            this.dockBar2.BarColor = System.Drawing.SystemColors.ControlLight;
-            this.dockBar2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.dockBar2.ItemInterval = 5;
-            this.dockBar2.Location = new System.Drawing.Point(30, 61);
-            this.dockBar2.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
-            this.dockBar2.Name = "dockBar2";
-            this.dockBar2.Size = new System.Drawing.Size(1277, 30);
-            this.dockBar2.TabIndex = 10;
+            this.dockBar4.BarColor = System.Drawing.SystemColors.ControlLight;
+            this.dockBar4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dockBar4.ItemInterval = 5;
+            this.dockBar4.Location = new System.Drawing.Point(30, 699);
+            this.dockBar4.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
+            this.dockBar4.Name = "dockBar4";
+            this.dockBar4.Size = new System.Drawing.Size(1247, 30);
+            this.dockBar4.TabIndex = 12;
             // 
             // dockBar3
             // 
@@ -579,16 +568,27 @@ namespace TestPlatform
             this.dockBar3.Size = new System.Drawing.Size(30, 638);
             this.dockBar3.TabIndex = 11;
             // 
-            // dockBar4
+            // dockBar2
             // 
-            this.dockBar4.BarColor = System.Drawing.SystemColors.ControlLight;
-            this.dockBar4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dockBar4.ItemInterval = 5;
-            this.dockBar4.Location = new System.Drawing.Point(30, 699);
-            this.dockBar4.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
-            this.dockBar4.Name = "dockBar4";
-            this.dockBar4.Size = new System.Drawing.Size(1247, 30);
-            this.dockBar4.TabIndex = 12;
+            this.dockBar2.BarColor = System.Drawing.SystemColors.ControlLight;
+            this.dockBar2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.dockBar2.ItemInterval = 5;
+            this.dockBar2.Location = new System.Drawing.Point(30, 61);
+            this.dockBar2.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
+            this.dockBar2.Name = "dockBar2";
+            this.dockBar2.Size = new System.Drawing.Size(1277, 30);
+            this.dockBar2.TabIndex = 10;
+            // 
+            // dockBar1
+            // 
+            this.dockBar1.BarColor = System.Drawing.SystemColors.ControlLight;
+            this.dockBar1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.dockBar1.ItemInterval = 5;
+            this.dockBar1.Location = new System.Drawing.Point(0, 61);
+            this.dockBar1.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
+            this.dockBar1.Name = "dockBar1";
+            this.dockBar1.Size = new System.Drawing.Size(30, 668);
+            this.dockBar1.TabIndex = 4;
             // 
             // MainForm
             // 

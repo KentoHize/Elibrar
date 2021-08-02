@@ -31,7 +31,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                     throw new ArgumentOutOfRangeException(nameof(Dock), DockStyleCantBeFillOrNone);
                 base.Dock = value;                
                 if (CurrentWindow != null)
-                    HideWindow();                
+                    HideWindow();
                 UpdateWidth();
             }
         }
@@ -65,7 +65,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             _StartPosition = 5;
             _CurrentPosition = 0;
             CurrentWindow = null;
-            CurrentWindowIndex = -1;          
+            CurrentWindowIndex = -1;            
         }
      
         protected override void OnCreateControl()
@@ -149,7 +149,11 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             window.ParentDockBar = this;
             _Windows.Add(window);
             _TextWidths.Add(size.Width);
-            _WindowsDefaultSize.Add(window.Size);
+            if (window.Height > ParentForm.ClientSize.Height / 2)
+                window.Height = ParentForm.ClientSize.Height / 2;
+            if (window.Width > ParentForm.ClientSize.Width / 2)
+                window.Width = ParentForm.ClientSize.Width / 2;
+            _WindowsDefaultSize.Add(window.Size);            
             if(window.Visible)
                 ShowWindow(_Windows.Count - 1);
             Refresh();
