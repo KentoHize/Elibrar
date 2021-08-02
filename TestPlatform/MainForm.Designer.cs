@@ -85,6 +85,9 @@ namespace TestPlatform
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.dockBar1 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
+            this.dockBar2 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
+            this.dockBar3 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
+            this.dockBar4 = new Aritiafel.Organizations.ElibrarPartFactory.DockBar();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -546,18 +549,54 @@ namespace TestPlatform
             // dockBar1
             // 
             this.dockBar1.BarColor = System.Drawing.SystemColors.ControlLight;
-            this.dockBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dockBar1.Dock = System.Windows.Forms.DockStyle.Left;
             this.dockBar1.ItemInterval = 5;
-            this.dockBar1.Location = new System.Drawing.Point(0, 699);
+            this.dockBar1.Location = new System.Drawing.Point(0, 61);
             this.dockBar1.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
             this.dockBar1.Name = "dockBar1";
-            this.dockBar1.Size = new System.Drawing.Size(1307, 30);
+            this.dockBar1.Size = new System.Drawing.Size(30, 668);
             this.dockBar1.TabIndex = 4;
+            // 
+            // dockBar2
+            // 
+            this.dockBar2.BarColor = System.Drawing.SystemColors.ControlLight;
+            this.dockBar2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.dockBar2.ItemInterval = 5;
+            this.dockBar2.Location = new System.Drawing.Point(30, 61);
+            this.dockBar2.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
+            this.dockBar2.Name = "dockBar2";
+            this.dockBar2.Size = new System.Drawing.Size(1277, 30);
+            this.dockBar2.TabIndex = 10;
+            // 
+            // dockBar3
+            // 
+            this.dockBar3.BarColor = System.Drawing.SystemColors.ControlLight;
+            this.dockBar3.Dock = System.Windows.Forms.DockStyle.Right;
+            this.dockBar3.ItemInterval = 5;
+            this.dockBar3.Location = new System.Drawing.Point(1277, 91);
+            this.dockBar3.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
+            this.dockBar3.Name = "dockBar3";
+            this.dockBar3.Size = new System.Drawing.Size(30, 638);
+            this.dockBar3.TabIndex = 11;
+            // 
+            // dockBar4
+            // 
+            this.dockBar4.BarColor = System.Drawing.SystemColors.ControlLight;
+            this.dockBar4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dockBar4.ItemInterval = 5;
+            this.dockBar4.Location = new System.Drawing.Point(30, 699);
+            this.dockBar4.MouseOverColor = System.Drawing.SystemColors.MenuHighlight;
+            this.dockBar4.Name = "dockBar4";
+            this.dockBar4.Size = new System.Drawing.Size(1247, 30);
+            this.dockBar4.TabIndex = 12;
             // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1307, 755);
+            this.Controls.Add(this.dockBar4);
+            this.Controls.Add(this.dockBar3);
+            this.Controls.Add(this.dockBar2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dockBar1);
             this.Controls.Add(this.statusStrip);
@@ -636,6 +675,9 @@ namespace TestPlatform
         private System.Windows.Forms.ToolTip toolTip;
         private Aritiafel.Organizations.ElibrarPartFactory.DockBar dockBar1;
         private System.Windows.Forms.Button button1;
+        private Aritiafel.Organizations.ElibrarPartFactory.DockBar dockBar2;
+        private Aritiafel.Organizations.ElibrarPartFactory.DockBar dockBar3;
+        private Aritiafel.Organizations.ElibrarPartFactory.DockBar dockBar4;
     }
 }
 

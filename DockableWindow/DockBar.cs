@@ -94,7 +94,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             CurrentWindow = _Windows[CurrentWindowIndex];
             CurrentWindow.StartPosition = FormStartPosition.Manual;
             SetWindowPostionAndSize();
-            CurrentWindow.Show(ParentForm);
+            if(!CurrentWindow.Visible)
+                CurrentWindow.Show(ParentForm);
         }
 
         protected void SetWindowPostionAndSize(bool refresh = false)
@@ -149,6 +150,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             _Windows.Add(window);
             _TextWidths.Add(size.Width);
             _WindowsDefaultSize.Add(window.Size);
+            if(window.Visible)
+                ShowWindow(_Windows.Count - 1);
             Refresh();
         }
 
