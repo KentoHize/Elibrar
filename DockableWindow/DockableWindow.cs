@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Aritiafel.Organizations.ElibrarPartFactory
@@ -17,15 +11,19 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         private const int WindowEdgeWidth = 10;
         private const int CaptionHeight = 28;
         private const int ControlButtonSize = 26;
+        private const int DockIconMarginToEdge = 20;
+        private const int DockIconHeight = 30;
+        private const int DockIconWidth = 20;
+        private const int DockIconWindowHeight = 20;
+        private const int DockIconWindowWidth = 16;
 
         protected Button CloseButton;
         protected Button FloatButton; // Like Maximize
         protected Button AutoHideButton; //Like Minimize
-        //protected bool _ReadyToMove;
         protected bool _IsMoving;
         protected DockBar[] _OwnerDockBars;
         protected Control _PaintingArea;
-
+        protected Form _PaintingForm;
         public DockBar ParentDockBar { get; set; }
         public Color CaptionBackColor { get; set; }
         public Color CaptionForeColor { get; set; }
@@ -83,7 +81,46 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             AutoHideButton.FlatAppearance.BorderSize = 0;
             AutoHideButton.Click += AutoHideButton_Click;
             SetControlBoxButtonPosition();
+
+            _PaintingForm = new Form();
+            _PaintingForm.BackColor = Color.Bisque;
+            _PaintingForm.FormBorderStyle = FormBorderStyle.None;
+            _PaintingForm.TransparencyKey = _PaintingForm.BackColor;
+            //_PaintingForm.Bounds = Screen.PrimaryScreen.Bounds;
+            _PaintingForm.StartPosition = FormStartPosition.Manual;
+            _PaintingForm.TopMost = true;
+            _PaintingForm.Paint += _PaintingForm_Paint;
+            _PaintingForm.MouseMove += _PaintingForm_MouseMove;            
             InitializeComponent();
+        }
+
+        private void _PaintingForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            _PaintingForm.Visible = false;
+        }
+
+        private void _PaintingForm_Paint(object sender, PaintEventArgs e)
+        {
+            //Graphics g = f.CreateGraphics();
+            //f.Show();
+            //Console.WriteLine("in");
+            if (_PaintingForm.Visible) // Moving
+            {
+                e.Graphics.FillRectangle(new SolidBrush(Color.White), DockIconMarginToEdge, (_PaintingForm.ClientSize.Height - DockIconHeight) / 2, DockIconWidth, DockIconHeight);
+                //e.Graphics.DrawRectangle(new Pen(Color.Black), DockIconMarginToEdge, (_PaintingForm.ClientSize.Height - DockIconHeight) / 2, DockIconWidth, DockIconHeight);
+                e.Graphics.Flush();
+            }
+
+
+
+            if (_OwnerDockBars[0] != null)
+            {
+
+                //e.Graphics
+                //g Left
+
+                //e.Graphics.FillRectangle(Brushes.Black, 20, 20, 100, 100);
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -164,26 +201,21 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             TextRenderer.DrawText(e.Graphics, Text, Font, new Point(WindowEdgeWidth, (CaptionHeight - Font.Height) / 2), CaptionForeColor);
         }
 
-        private void PaintingArea_Paint(object sender, PaintEventArgs e)
-        {   
-            e.Graphics.Clear(_PaintingArea.BackColor);
-            if (_IsMoving)
-            {
-
-                e.Graphics.FillRectangle(Brushes.Black, 20, 20, 100, 100);
-            }
-        }
-
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-            if(Visible)
-                SetPaintingAreaAndOwnerDockBars();
+            if (Visible)
+                SetOwnerAndPaintingFormAndDockBars();
         }
-        protected void SetPaintingAreaAndOwnerDockBars()
+
+        protected void SetOwnerAndPaintingFormAndDockBars()
         {
             if (Owner != null)
             {
+                Owner.Resize -= Owner_Resize;
+                Owner.Resize += Owner_Resize;
+                Owner.Move -= Owner_Move;
+                Owner.Move += Owner_Move;
                 _OwnerDockBars[0] = _OwnerDockBars[1] =
                 _OwnerDockBars[2] = _OwnerDockBars[3] = null;
                 foreach (Control c in Owner.Controls)
@@ -200,23 +232,45 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                             _OwnerDockBars[3] = db;
                     }
                     if (c is MdiClient)
-                        _PaintingArea = c;
+                    {
+                        _PaintingForm.Bounds = c.Bounds;
+                        _PaintingForm.Location = c.PointToScreen(new Point(0, 0));
+                    }
                 }
-                if (_PaintingArea == null)
-                    _PaintingArea = Owner;
             }
+        }
+
+        protected void SetPaintingFormBoundsAndLocation()
+        {
+            _PaintingForm.Bounds = Owner.Bounds;
+            _PaintingForm.Location = Owner.Location;
+            foreach (Control c in Owner.Controls)
+            {
+                if (c is MdiClient)
+                {
+                    _PaintingForm.Bounds = c.Bounds;
+                    _PaintingForm.Location = c.PointToScreen(new Point(0, 0));
+                }
+            }
+        }
+
+        private void Owner_Move(object sender, EventArgs e)
+        {
+            SetPaintingFormBoundsAndLocation();
+        }
+
+        private void Owner_Resize(object sender, EventArgs e)
+        {
+            SetPaintingFormBoundsAndLocation();
         }
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == 0x84)
+            if (m.Msg == 0x84) // MouseMoving
             {
-                if(_IsMoving)
-                {
-                    _IsMoving = false;
-                    _PaintingArea.Refresh();
-                }
-                
+                if (_PaintingForm.Visible)
+                    _PaintingForm.Visible = false;
+
                 Point location = new Point(m.LParam.ToInt32());
                 location = PointToClient(location);
                 if (location.X >= 0 && location.Y >= 0 && location.X <= WindowEdgeWidth && location.Y <= WindowEdgeWidth)
@@ -302,17 +356,12 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
                     goto AtEnd;
                 return;
             }
-            else if (m.Msg == 0xA1)
-            {   
+            else if (m.Msg == 0xA1) //FunctionalMouseDown
+            {
                 Point location = new Point(m.LParam.ToInt32());
                 location = PointToClient(location);
                 if (location.Y < CaptionHeight && location.Y > WindowEdgeWidth)
-                {   
-                    _PaintingArea.Paint -= PaintingArea_Paint;
-                    _PaintingArea.Paint += PaintingArea_Paint;
-                    _IsMoving = true;
-                    _PaintingArea.Refresh();
-                }               
+                    _PaintingForm.Visible = true;
             }
         AtEnd:
             base.WndProc(ref m);

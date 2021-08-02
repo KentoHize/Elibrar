@@ -128,10 +128,6 @@ namespace TestPlatform
                     dockBar1.Dock = DockStyle.Left;
                     break;
             }
-        }
-
-        
-
-      
+        }      
     }
 }
