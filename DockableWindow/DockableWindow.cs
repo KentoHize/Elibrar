@@ -97,28 +97,66 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 
         private void _PaintingForm_MouseMove(object sender, MouseEventArgs e)
         {
-            _PaintingForm.Visible = false;
-            Console.WriteLine($"PFMM:{e.X},{e.Y}");
+            _PaintingForm.Visible = false;            
             for (int i = 0; i < 4; i++)
                 if (DockIconRectangles[i].Contains(e.X, e.Y))
-                    _OwnerDockBars[i].AddWindow(this);
-            //Console.WriteLine($"{e.X},{e.Y}");
+                    _OwnerDockBars[i].AddWindow(this);            
         }
 
         protected void PaintDockIcon(Graphics g, int index)
-        {
+        {   
             g.FillRectangle(new SolidBrush(Color.Transparent), DockIconRectangles[index]);
-            g.FillRectangle(new SolidBrush(Color.White), DockIconRectangles[index].X + 4, DockIconRectangles[index].Y + 4, DockIconRectangles[index].Width - 8, DockIconRectangles[index].Height - 8);
-            g.FillRectangle(new SolidBrush(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, 4);
-            g.DrawRectangle(new Pen(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, DockIconRectangles[index].Height - 12);
             g.DrawRectangle(new Pen(Color.Gray), DockIconRectangles[index]);
-            g.FillPolygon(new SolidBrush(Color.Black), new Point[] {
+            g.FillRectangle(new SolidBrush(Color.White), DockIconRectangles[index].X + 4, DockIconRectangles[index].Y + 4, DockIconRectangles[index].Width - 8, DockIconRectangles[index].Height - 8);            
+            if (index == 0)
+            {
+                g.FillRectangle(new SolidBrush(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, 4);
+                g.DrawRectangle(new Pen(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, DockIconRectangles[index].Height - 12);
+                g.FillPolygon(new SolidBrush(Color.Black), new Point[] {
                 new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 8,
                     DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2),
                 new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 12,
                     DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 - 4),
                 new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 12,
                     DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 + 4) });
+            }
+
+            else if (index == 1)
+            {
+                g.FillRectangle(new SolidBrush(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width - 12, 4);
+                g.DrawRectangle(new Pen(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width - 12, DockIconRectangles[index].Height / 2 - 6);
+                g.FillPolygon(new SolidBrush(Color.Black), new Point[] {
+                new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2,
+                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 + 7), //Check
+                new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 - 4,
+                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 + 12),
+                new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 4,
+                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 + 12) });
+            }
+            else if (index == 2)
+            {
+                g.FillRectangle(new SolidBrush(CaptionBackColor), DockIconRectangles[index].X + DockIconRectangles[index].Width / 2, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, 4);
+                g.DrawRectangle(new Pen(CaptionBackColor), DockIconRectangles[index].X + DockIconRectangles[index].Width / 2, DockIconRectangles[index].Y + 6, DockIconRectangles[index].Width / 2 - 6, DockIconRectangles[index].Height - 12);
+                g.FillPolygon(new SolidBrush(Color.Black), new Point[] {
+                new Point(DockIconRectangles[index].X + 12,
+                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2),
+                new Point(DockIconRectangles[index].X + 8,
+                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 - 4),
+                new Point(DockIconRectangles[index].X + 8,
+                    DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2 + 4) });
+            }    
+            else if (index == 3)
+            {
+                g.FillRectangle(new SolidBrush(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2, DockIconRectangles[index].Width - 12, 4);
+                g.DrawRectangle(new Pen(CaptionBackColor), DockIconRectangles[index].X + 6, DockIconRectangles[index].Y + DockIconRectangles[index].Height / 2, DockIconRectangles[index].Width - 12, DockIconRectangles[index].Height / 2 - 6);
+                g.FillPolygon(new SolidBrush(Color.Black), new Point[] {
+                new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2,
+                    DockIconRectangles[index].Y + 12),
+                new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 - 4,
+                    DockIconRectangles[index].Y + 8),
+                new Point(DockIconRectangles[index].X + DockIconRectangles[index].Width / 2 + 4,
+                    DockIconRectangles[index].Y + 8) });
+            }
         }
 
         private void _PaintingForm_Paint(object sender, PaintEventArgs e)

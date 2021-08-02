@@ -19,6 +19,9 @@ namespace TestPlatform
             InitializeComponent();
             dockBar1.AddWindow(new DockableWindow1());
             dockBar1.AddWindow(new DockableWindow2());
+            dockBar2.AddWindow(new DockableWindow2 { Text = "ABC" });
+            dockBar3.AddWindow(new DockableWindow2 { Text = "DEF" });
+            dockBar4.AddWindow(new DockableWindow2 { Text = "GHIJK" });
         }
 
         private void ShowNewForm(object sender, EventArgs e)
