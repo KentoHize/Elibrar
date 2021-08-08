@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -14,8 +15,8 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
         private const int DockIconMarginToEdge = 20;
         private const int DockIconHeight = 40;
         private const int DockIconWidth = 40;
-        private const int DockIconWindowHeight = 20;
-        private const int DockIconWindowWidth = 16;
+        //private const int DockIconWindowHeight = 20;
+        //private const int DockIconWindowWidth = 16;
 
         protected Button CloseButton;
         protected Button FloatButton; // Like Maximize
@@ -83,7 +84,7 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
             AutoHideButton.Click += AutoHideButton_Click;
             SetControlBoxButtonPosition();
 
-            _PaintingForm = new Form();
+            _PaintingForm = new Form();            
             _PaintingForm.BackColor = Color.FromArgb(1, 1, 1);
             _PaintingForm.FormBorderStyle = FormBorderStyle.None;
             _PaintingForm.TransparencyKey = _PaintingForm.BackColor;
@@ -266,8 +267,11 @@ namespace Aritiafel.Organizations.ElibrarPartFactory
 
         internal void DisableOwner()
         {
-            Owner.Resize -= Owner_Resize;
-            Owner.Move -= Owner_Move;
+            if(Owner != null)
+            {
+                Owner.Resize -= Owner_Resize;
+                Owner.Move -= Owner_Move;
+            }
         }
 
         internal void SetOwnerAndPaintingFormAndDockBars()

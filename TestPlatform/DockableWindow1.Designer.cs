@@ -39,7 +39,7 @@ namespace TestPlatform
             // FloatButton
             // 
             this.FloatButton.FlatAppearance.BorderSize = 0;
-            this.FloatButton.Location = new System.Drawing.Point(364, 1);
+            this.FloatButton.Location = new System.Drawing.Point(364, 1);            
             // 
             // AutoHideButton
             // 
